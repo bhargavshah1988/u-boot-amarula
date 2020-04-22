@@ -16,6 +16,7 @@
  * @addr: Address to poll
  * @val: Variable to read the value into
  * @cond: Break condition (usually involving @val)
+ * @sleep_us: Maximum time to sleep in us
  * @timeout_us: Timeout in us, 0 means never timeout
  *
  * Returns 0 on success and -ETIMEDOUT upon a timeout. In either
@@ -24,7 +25,7 @@
  * When available, you'll probably want to use one of the specialized
  * macros defined below rather than this macro directly.
  */
-#define readx_poll_timeout(op, addr, val, cond, timeout_us)	\
+#define readx_poll_timeout(op, addr, val, cond, sleep_us, timeout_us)	\
 ({ \
 	unsigned long timeout = timer_get_us() + timeout_us; \
 	for (;;) { \
@@ -35,33 +36,34 @@
 			(val) = op(addr); \
 			break; \
 		} \
+		if (sleep_us) \
+			udelay(sleep_us); \
 	} \
 	(cond) ? 0 : -ETIMEDOUT; \
 })
 
-
 #define readb_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readb, addr, val, cond, timeout_us)
+	readx_poll_timeout(readb, addr, val, cond, false, timeout_us)
 
 #define readw_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readw, addr, val, cond, timeout_us)
+	readx_poll_timeout(readw, addr, val, cond, false, timeout_us)
 
 #define readl_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readl, addr, val, cond, timeout_us)
+	readx_poll_timeout(readl, addr, val, cond, false, timeout_us)
 
 #define readq_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readq, addr, val, cond, timeout_us)
+	readx_poll_timeout(readq, addr, val, cond, false, timeout_us)
 
 #define readb_relaxed_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readb_relaxed, addr, val, cond, timeout_us)
+	readx_poll_timeout(readb_relaxed, addr, val, cond, false, timeout_us)
 
 #define readw_relaxed_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readw_relaxed, addr, val, cond, timeout_us)
+	readx_poll_timeout(readw_relaxed, addr, val, cond, false, timeout_us)
 
 #define readl_relaxed_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readl_relaxed, addr, val, cond, timeout_us)
+	readx_poll_timeout(readl_relaxed, addr, val, cond, false, timeout_us)
 
 #define readq_relaxed_poll_timeout(addr, val, cond, timeout_us) \
-	readx_poll_timeout(readq_relaxed, addr, val, cond, timeout_us)
+	readx_poll_timeout(readq_relaxed, addr, val, cond, false, timeout_us)
 
 #endif /* _LINUX_IOPOLL_H */
