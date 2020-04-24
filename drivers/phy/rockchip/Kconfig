@@ -1,0 +1,10 @@
+#
+# Phy drivers for Rockchip platforms
+#
+config PHY_ROCKCHIP_PCIE
+        tristate "Rockchip PCIe PHY Driver"
+        depends on ARCH_ROCKCHIP
+        select PHY
+        select REGMAP 
+        help
+          Enable this to support the Rockchip PCIe PHY.
