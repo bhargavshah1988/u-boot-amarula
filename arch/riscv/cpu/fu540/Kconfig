@@ -5,6 +5,7 @@
 config SIFIVE_FU540
 	bool
 	select ARCH_EARLY_INIT_R
+	imply BOARD_FU540
 	imply CPU
 	imply CPU_RISCV
 	imply RISCV_TIMER
