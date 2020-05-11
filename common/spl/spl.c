@@ -9,6 +9,7 @@
 #include <common.h>
 #include <bloblist.h>
 #include <binman_sym.h>
+#include <board.h>
 #include <dm.h>
 #include <handoff.h>
 #include <hang.h>
@@ -483,9 +484,20 @@ int spl_init(void)
 #define BOOT_DEVICE_NONE 0xdeadbeef
 #endif
 
+__weak u32 spl_boot_device(void)
+{
+	return 0;
+}
+
 __weak void board_boot_order(u32 *spl_boot_list)
 {
-	spl_boot_list[0] = spl_boot_device();
+	struct udevice *board;
+
+	if (!board_get(&board))
+		board_get_int(board, BOARD_SPL_BOOT_DEVICE,
+			      (int *)&spl_boot_list[0]);
+	else
+		spl_boot_list[0] = spl_boot_device();
 }
 
 static struct spl_image_loader *spl_ll_find_loader(uint boot_device)
