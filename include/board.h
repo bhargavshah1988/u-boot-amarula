@@ -211,3 +211,12 @@ static inline int board_get_fit_loadable(struct udevice *dev, int index,
 }
 
 #endif
+
+/**
+ * Common unique identifier
+ *
+ * @BOARD_SPL_BOOT_DEVICE:	id to get SPL boot device.
+ */
+enum common_ids {
+	BOARD_SPL_BOOT_DEVICE,
+};

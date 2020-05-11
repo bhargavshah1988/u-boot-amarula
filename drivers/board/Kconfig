@@ -12,6 +12,14 @@ config SPL_BOARD
 	depends on SPL_DM
 	bool "Enable board driver support in SPL"
 
+config BOARD_FU540
+	bool "Enable board driver for the FU540 boards"
+	depends on RISCV
+	select SPL_BOARD
+	help
+	  Support querying board information for the fu540 boards, like
+	  get soc mode select, get SPL boot device and etc.
+
 config BOARD_GAZERBEAM
 	bool "Enable board driver for the Gazerbeam board"
 	help
