@@ -29,50 +29,38 @@ int spi_flash_erase_dm(struct udevice *dev, u32 offset, size_t len)
 	return log_ret(sf_get_ops(dev)->erase(dev, offset, len));
 }
 
-/*
- * TODO(sjg@chromium.org): This is an old-style function. We should remove
- * it when all SPI flash drivers use dm
- */
-struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs,
-				  unsigned int max_hz, unsigned int spi_mode)
-{
-	struct udevice *dev;
-
-	if (spi_flash_probe_bus_cs(bus, cs, max_hz, spi_mode, &dev))
-		return NULL;
-
-	return dev_get_uclass_priv(dev);
-}
-
 void spi_flash_free(struct spi_flash *flash)
 {
 	device_remove(flash->spi->dev, DM_REMOVE_NORMAL);
 }
 
-int spi_flash_probe_bus_cs(unsigned int busnum, unsigned int cs,
-			   unsigned int max_hz, unsigned int spi_mode,
-			   struct udevice **devp)
+struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs,
+				  unsigned int max_hz, unsigned int spi_mode)
 {
 	struct spi_slave *slave;
-	struct udevice *bus;
+	struct udevice *new, *bus_dev;
 	char *str;
 	int ret;
+
+	/* Remove the old device, otherwise probe will just be a nop */
+	ret = spi_find_bus_and_cs(bus, cs, &bus_dev, &new);
+	if (!ret)
+		device_remove(new, DM_REMOVE_NORMAL);
 
 #if defined(CONFIG_SPL_BUILD) && CONFIG_IS_ENABLED(USE_TINY_PRINTF)
 	str = "spi_flash";
 #else
 	char name[30];
 
-	snprintf(name, sizeof(name), "spi_flash@%d:%d", busnum, cs);
+	snprintf(name, sizeof(name), "spi_flash@%d:%d", bus, cs);
 	str = strdup(name);
 #endif
-	ret = spi_get_bus_and_cs(busnum, cs, max_hz, spi_mode,
-				  "spi_flash_std", str, &bus, &slave);
+	ret = spi_get_bus_and_cs(bus, cs, max_hz, spi_mode,
+				 "spi_flash_std", str, &bus_dev, &slave);
 	if (ret)
-		return ret;
+		return NULL;
 
-	*devp = slave->dev;
-	return 0;
+	return dev_get_uclass_priv(slave->dev);
 }
 
 static int spi_flash_post_bind(struct udevice *dev)

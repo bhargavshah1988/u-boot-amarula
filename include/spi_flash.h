@@ -75,17 +75,6 @@ int spi_flash_write_dm(struct udevice *dev, u32 offset, size_t len,
  */
 int spi_flash_erase_dm(struct udevice *dev, u32 offset, size_t len);
 
-int spi_flash_probe_bus_cs(unsigned int busnum, unsigned int cs,
-			   unsigned int max_hz, unsigned int spi_mode,
-			   struct udevice **devp);
-
-/* Compatibility function - this is the old U-Boot API */
-struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs,
-				  unsigned int max_hz, unsigned int spi_mode);
-
-/* Compatibility function - this is the old U-Boot API */
-void spi_flash_free(struct spi_flash *flash);
-
 static inline int spi_flash_read(struct spi_flash *flash, u32 offset,
 				 size_t len, void *buf)
 {
@@ -112,10 +101,6 @@ int sandbox_sf_bind_emul(struct sandbox_state *state, int busnum, int cs,
 void sandbox_sf_unbind_emul(struct sandbox_state *state, int busnum, int cs);
 
 #else
-struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs,
-		unsigned int max_hz, unsigned int spi_mode);
-
-void spi_flash_free(struct spi_flash *flash);
 
 static inline int spi_flash_read(struct spi_flash *flash, u32 offset,
 		size_t len, void *buf)
@@ -153,6 +138,11 @@ static inline int spi_flash_erase(struct spi_flash *flash, u32 offset,
 	return mtd->_erase(mtd, &instr);
 }
 #endif
+
+struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs,
+				  unsigned int max_hz, unsigned int spi_mode);
+
+void spi_flash_free(struct spi_flash *flash);
 
 static inline int spi_flash_protect(struct spi_flash *flash, u32 ofs, u32 len,
 					bool prot)
