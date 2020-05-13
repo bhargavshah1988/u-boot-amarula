@@ -50,14 +50,6 @@ static int dm_test_spi_flash(struct unit_test_state *uts)
 	ut_assertok(spi_flash_read_dm(dev, 0, size, dst));
 	ut_assertok(memcmp(src, dst, size));
 
-	/* Try the write-protect stuff */
-	ut_assertok(uclass_first_device_err(UCLASS_SPI_EMUL, &emul));
-	ut_asserteq(0, spl_flash_get_sw_write_prot(dev));
-	sandbox_sf_set_block_protect(emul, 1);
-	ut_asserteq(1, spl_flash_get_sw_write_prot(dev));
-	sandbox_sf_set_block_protect(emul, 0);
-	ut_asserteq(0, spl_flash_get_sw_write_prot(dev));
-
 	/* Check mapping */
 	ut_assertok(dm_spi_get_mmap(dev, &map_base, &map_size, &offset));
 	ut_asserteq(0x1000, map_base);
