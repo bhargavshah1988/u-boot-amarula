@@ -50,15 +50,17 @@ static int setup_flash_device(void)
 
 	env_flash = dev_get_uclass_priv(new);
 #else
+	struct spi_flash *new;
 
-	if (!env_flash) {
-		env_flash = spi_flash_probe(CONFIG_ENV_SPI_BUS,
-			CONFIG_ENV_SPI_CS,
-			CONFIG_ENV_SPI_MAX_HZ, CONFIG_ENV_SPI_MODE);
-		if (!env_flash) {
-			env_set_default("spi_flash_probe() failed", 0);
-			return -EIO;
-		}
+	if (env_flash)
+		spi_flash_free(env_flash);
+
+	new = spi_flash_probe(CONFIG_ENV_SPI_BUS, CONFIG_ENV_SPI_CS,
+			      CONFIG_ENV_SPI_MAX_HZ, CONFIG_ENV_SPI_MODE);
+	env_flash = new;
+	if (!new) {
+		env_set_default("spi_flash_probe() failed", 0);
+		return -EIO;
 	}
 #endif
 	return 0;
