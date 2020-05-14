@@ -57,6 +57,7 @@ source "board/sifive/fu540/Kconfig"
 # platform-specific options below
 source "arch/riscv/cpu/ax25/Kconfig"
 source "arch/riscv/cpu/generic/Kconfig"
+source "arch/riscv/cpu/fu540/Kconfig"
 
 # architecture-specific options below
 
