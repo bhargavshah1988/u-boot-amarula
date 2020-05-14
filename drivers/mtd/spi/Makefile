@@ -3,8 +3,12 @@
 # (C) Copyright 2006
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 
-obj-$(CONFIG_DM_SPI_FLASH) += sf-uclass.o
-spi-nor-y := sf_probe.o spi-nor-ids.o
+ifdef CONFIG_DM_SPI_FLASH
+spi-nor-y += sf-uclass.o
+else
+spi-nor-y += sf-nodm.o
+endif
+spi-nor-y += spi-nor-ids.o
 
 ifdef CONFIG_SPL_BUILD
 obj-$(CONFIG_SPL_SPI_BOOT)	+= fsl_espi_spl.o

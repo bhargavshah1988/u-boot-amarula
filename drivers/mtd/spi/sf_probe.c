@@ -8,7 +8,6 @@
  */
 
 #include <common.h>
-#include <dm.h>
 #include <errno.h>
 #include <log.h>
 #include <malloc.h>
@@ -53,7 +52,6 @@ err_read_id:
 	return ret;
 }
 
-#ifndef CONFIG_DM_SPI_FLASH
 struct spi_flash *spi_flash_probe(unsigned int busnum, unsigned int cs,
 				  unsigned int max_hz, unsigned int spi_mode)
 {
@@ -89,85 +87,3 @@ void spi_flash_free(struct spi_flash *flash)
 	spi_free_slave(flash->spi);
 	free(flash);
 }
-
-#else /* defined CONFIG_DM_SPI_FLASH */
-
-static int spi_flash_std_read(struct udevice *dev, u32 offset, size_t len,
-			      void *buf)
-{
-	struct spi_flash *flash = dev_get_uclass_priv(dev);
-	struct mtd_info *mtd = &flash->mtd;
-	size_t retlen;
-
-	return log_ret(mtd->_read(mtd, offset, len, &retlen, buf));
-}
-
-static int spi_flash_std_write(struct udevice *dev, u32 offset, size_t len,
-			       const void *buf)
-{
-	struct spi_flash *flash = dev_get_uclass_priv(dev);
-	struct mtd_info *mtd = &flash->mtd;
-	size_t retlen;
-
-	return mtd->_write(mtd, offset, len, &retlen, buf);
-}
-
-static int spi_flash_std_erase(struct udevice *dev, u32 offset, size_t len)
-{
-	struct spi_flash *flash = dev_get_uclass_priv(dev);
-	struct mtd_info *mtd = &flash->mtd;
-	struct erase_info instr;
-
-	if (offset % mtd->erasesize || len % mtd->erasesize) {
-		printf("SF: Erase offset/length not multiple of erase size\n");
-		return -EINVAL;
-	}
-
-	memset(&instr, 0, sizeof(instr));
-	instr.addr = offset;
-	instr.len = len;
-
-	return mtd->_erase(mtd, &instr);
-}
-
-int spi_flash_std_probe(struct udevice *dev)
-{
-	struct spi_slave *slave = dev_get_parent_priv(dev);
-	struct spi_flash *flash;
-
-	flash = dev_get_uclass_priv(dev);
-	flash->dev = dev;
-	flash->spi = slave;
-	return spi_flash_probe_slave(flash);
-}
-
-static int spi_flash_std_remove(struct udevice *dev)
-{
-	if (CONFIG_IS_ENABLED(SPI_FLASH_MTD))
-		spi_flash_mtd_unregister();
-
-	return 0;
-}
-
-static const struct dm_spi_flash_ops spi_flash_std_ops = {
-	.read = spi_flash_std_read,
-	.write = spi_flash_std_write,
-	.erase = spi_flash_std_erase,
-};
-
-static const struct udevice_id spi_flash_std_ids[] = {
-	{ .compatible = "jedec,spi-nor" },
-	{ }
-};
-
-U_BOOT_DRIVER(spi_flash_std) = {
-	.name		= "spi_flash_std",
-	.id		= UCLASS_SPI_FLASH,
-	.of_match	= spi_flash_std_ids,
-	.probe		= spi_flash_std_probe,
-	.remove		= spi_flash_std_remove,
-	.priv_auto_alloc_size = sizeof(struct spi_flash),
-	.ops		= &spi_flash_std_ops,
-};
-
-#endif /* CONFIG_DM_SPI_FLASH */
