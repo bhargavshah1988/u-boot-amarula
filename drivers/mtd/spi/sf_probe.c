@@ -140,13 +140,11 @@ static int spi_flash_std_get_sw_write_prot(struct udevice *dev)
 int spi_flash_std_probe(struct udevice *dev)
 {
 	struct spi_slave *slave = dev_get_parent_priv(dev);
-	struct dm_spi_slave_platdata *plat = dev_get_parent_platdata(dev);
 	struct spi_flash *flash;
 
 	flash = dev_get_uclass_priv(dev);
 	flash->dev = dev;
 	flash->spi = slave;
-	debug("%s: slave=%p, cs=%d\n", __func__, slave, plat->cs);
 	return spi_flash_probe_slave(flash);
 }
 
