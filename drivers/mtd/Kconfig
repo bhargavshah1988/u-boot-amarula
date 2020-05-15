@@ -17,6 +17,14 @@ config DM_MTD
 	  flash, RAM and similar chips, often used for solid state file
 	  systems on embedded devices.
 
+config SPL_DM_MTD
+	bool "Enable Driver Model for MTD drivers in SPL"
+	depends on SPL_DM
+	help
+	  Enable driver model for Memory Technology Devices (MTD), such as
+	  flash, RAM and similar chips, often used for solid state file
+	  systems on embedded devices.
+
 config MTD_NOR_FLASH
 	bool "Enable parallel NOR flash support"
 	help
