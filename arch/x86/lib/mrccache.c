@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <fdtdec.h>
 #include <malloc.h>
+#include <mtd.h>
 #include <net.h>
 #include <spi.h>
 #include <spi_flash.h>
@@ -166,7 +167,7 @@ static int mrccache_update(struct udevice *sf, struct mrc_region *entry,
 		debug("Erasing the MRC cache region of %x bytes at %x\n",
 		      entry->length, entry->offset);
 
-		ret = spi_flash_erase_dm(sf, entry->offset, entry->length);
+		ret = mtd_derase(sf, entry->offset, entry->length);
 		if (ret) {
 			debug("Failed to erase flash region\n");
 			return ret;
@@ -177,7 +178,7 @@ static int mrccache_update(struct udevice *sf, struct mrc_region *entry,
 	/* Write the data out */
 	offset = (ulong)cache - base_addr + entry->offset;
 	debug("Write MRC cache update to flash at %lx\n", offset);
-	ret = spi_flash_write_dm(sf, offset, cur->data_size + sizeof(*cur),
+	ret = mtd_dwrite(sf, offset, cur->data_size + sizeof(*cur),
 				 cur);
 	if (ret) {
 		debug("Failed to write to SPI flash\n");
@@ -240,7 +241,7 @@ int mrccache_get_region(enum mrc_type_t type, struct udevice **devp,
 	 * the device here since it may put it into a strange state where the
 	 * memory map cannot be read.
 	 */
-	ret = uclass_find_first_device(UCLASS_SPI_FLASH, &dev);
+	ret = uclass_find_first_device(UCLASS_MTD, &dev);
 	if (!ret && !dev)
 		ret = -ENODEV;
 	if (ret)

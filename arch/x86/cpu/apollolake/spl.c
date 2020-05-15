@@ -7,6 +7,7 @@
 #include <binman_sym.h>
 #include <dm.h>
 #include <malloc.h>
+#include <mtd.h>
 #include <spi.h>
 #include <spl.h>
 #include <spi_flash.h>
@@ -38,7 +39,7 @@ static int rom_load_image(struct spl_image_info *spl_image,
 	debug("Reading from mapped SPI %lx, size %lx", spl_pos, spl_size);
 
 	if (CONFIG_IS_ENABLED(SPI_FLASH_SUPPORT)) {
-		ret = uclass_find_first_device(UCLASS_SPI_FLASH, &dev);
+		ret = uclass_find_first_device(UCLASS_MTD, &dev);
 		if (ret)
 			return log_msg_ret("spi_flash", ret);
 		if (!dev)
@@ -74,7 +75,7 @@ static int spl_fast_spi_load_image(struct spl_image_info *spl_image,
 	struct udevice *dev;
 	int ret;
 
-	ret = uclass_first_device_err(UCLASS_SPI_FLASH, &dev);
+	ret = uclass_first_device_err(UCLASS_MTD, &dev);
 	if (ret)
 		return ret;
 
@@ -86,8 +87,7 @@ static int spl_fast_spi_load_image(struct spl_image_info *spl_image,
 	spl_image->name = "U-Boot";
 	spl_pos &= ~0xff000000;
 	debug("Reading from flash %lx, size %lx\n", spl_pos, spl_size);
-	ret = spi_flash_read_dm(dev, spl_pos, spl_size,
-				(void *)spl_image->load_addr);
+	ret = mtd_dread(dev, spl_pos, spl_size, (void *)spl_image->load_addr);
 	cpu_flush_l1d_to_l2();
 	if (ret)
 		return ret;

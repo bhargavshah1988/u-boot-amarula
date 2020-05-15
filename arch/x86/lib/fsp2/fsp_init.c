@@ -123,7 +123,7 @@ int fsp_locate_fsp(enum fsp_type_t type, struct binman_entry *entry,
 		struct udevice *sf;
 
 		/* Just use the SPI driver to get the memory map */
-		ret = uclass_find_first_device(UCLASS_SPI_FLASH, &sf);
+		ret = uclass_find_first_device(UCLASS_MTD, &sf);
 		if (ret)
 			return log_msg_ret("Cannot get SPI flash", ret);
 		ret = dm_spi_get_mmap(sf, &map_base, &map_size, &offset);

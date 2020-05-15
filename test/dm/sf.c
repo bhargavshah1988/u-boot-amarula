@@ -31,23 +31,23 @@ static int dm_test_spi_flash(struct unit_test_state *uts)
 
 	src = map_sysmem(0x20000, full_size);
 	ut_assertok(os_write_file("spi.bin", src, full_size));
-	ut_assertok(uclass_first_device_err(UCLASS_SPI_FLASH, &dev));
+	ut_assertok(uclass_first_device_err(UCLASS_MTD, &dev));
 
 	dst = map_sysmem(0x20000 + full_size, full_size);
-	ut_assertok(spi_flash_read_dm(dev, 0, size, dst));
+	ut_assertok(mtd_dread(dev, 0, size, dst));
 	ut_assertok(memcmp(src, dst, size));
 
 	/* Erase */
-	ut_assertok(spi_flash_erase_dm(dev, 0, size));
-	ut_assertok(spi_flash_read_dm(dev, 0, size, dst));
+	ut_assertok(mtd_derase(dev, 0, size));
+	ut_assertok(mtd_dread(dev, 0, size, dst));
 	for (i = 0; i < size; i++)
 		ut_asserteq(dst[i], 0xff);
 
 	/* Write some new data */
 	for (i = 0; i < size; i++)
 		src[i] = i;
-	ut_assertok(spi_flash_write_dm(dev, 0, size, src));
-	ut_assertok(spi_flash_read_dm(dev, 0, size, dst));
+	ut_assertok(mtd_dwrite(dev, 0, size, src));
+	ut_assertok(mtd_dread(dev, 0, size, dst));
 	ut_assertok(memcmp(src, dst, size));
 
 	/* Check mapping */

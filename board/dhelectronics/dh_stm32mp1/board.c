@@ -649,7 +649,7 @@ void board_mtdparts_default(const char **mtdids, const char **mtdparts)
 		pr_debug("mtd device = %s\n", dev->name);
 	}
 
-	if (!uclass_get_device(UCLASS_SPI_FLASH, 0, &dev))
+	if (!uclass_get_device(UCLASS_MTD, 0, &dev))
 		board_get_mtdparts("nor0", ids, parts);
 
 	mtd_initialized = true;
@@ -708,7 +708,7 @@ void set_dfu_alt_info(char *interface, char *devstr)
 	if (!uclass_get_device(UCLASS_MMC, 1, &dev))
 		board_get_alt_info("mmc1", buf);
 
-	if (!uclass_get_device(UCLASS_SPI_FLASH, 0, &dev))
+	if (!uclass_get_device(UCLASS_MTD, 0, &dev))
 		board_get_alt_info("nor0", buf);
 
 	env_set("dfu_alt_info", buf);

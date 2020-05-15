@@ -6,6 +6,7 @@
 
 #include <common.h>
 #include <dm.h>
+#include <mtd.h>
 #include <spi_flash.h>
 #include <asm/fsp/fsp_support.h>
 #include <asm/fsp2/fsp_internal.h>
@@ -36,10 +37,10 @@ int fsp_get_header(ulong offset, ulong size, bool use_spi_flash,
 	 */
 	debug("offset=%x buf=%x\n", (uint)offset, (uint)buf);
 	if (use_spi_flash) {
-		ret = uclass_first_device_err(UCLASS_SPI_FLASH, &dev);
+		ret = uclass_first_device_err(UCLASS_MTD, &dev);
 		if (ret)
 			return log_msg_ret("Cannot find flash device", ret);
-		ret = spi_flash_read_dm(dev, offset, PROBE_BUF_SIZE, buf);
+		ret = mtd_dread(dev, offset, PROBE_BUF_SIZE, buf);
 		if (ret)
 			return log_msg_ret("Cannot read flash", ret);
 	} else {
@@ -87,7 +88,7 @@ int fsp_get_header(ulong offset, ulong size, bool use_spi_flash,
 	debug("Image base %x\n", (uint)base);
 	debug("Image addr %x\n", (uint)fsp->fsp_mem_init);
 	if (use_spi_flash) {
-		ret = spi_flash_read_dm(dev, offset, size, base);
+		ret = mtd_dread(dev, offset, size, base);
 		if (ret)
 			return log_msg_ret("Could not read FPS-M", ret);
 	} else {

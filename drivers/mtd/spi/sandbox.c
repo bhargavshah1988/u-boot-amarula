@@ -8,7 +8,7 @@
  * Licensed under the GPL-2 or later.
  */
 
-#define LOG_CATEGORY UCLASS_SPI_FLASH
+#define LOG_CATEGORY UCLASS_MTD
 
 #include <common.h>
 #include <dm.h>

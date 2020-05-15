@@ -106,10 +106,10 @@ void at91_spi_nor_set_ethaddr(void)
 	if (env_get(ethaddr_name))
 		return;
 
-	if (uclass_first_device_err(UCLASS_SPI_FLASH, &dev))
+	if (uclass_first_device_err(UCLASS_MTD, &dev))
 		return;
 
-	nor = dev_get_uclass_priv(dev);
+	nor = dev_get_priv(dev);
 	if (!nor)
 		return;
 
