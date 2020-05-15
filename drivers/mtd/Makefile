@@ -4,7 +4,6 @@
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 
 mtd-$(CONFIG_MTD) += mtdcore.o mtd_uboot.o
-mtd-$(CONFIG_$(SPL_)DM_MTD) += mtd-uclass.o
 mtd-$(CONFIG_MTD_PARTITIONS) += mtdpart.o
 mtd-$(CONFIG_MTD_CONCAT) += mtdconcat.o
 mtd-$(CONFIG_ALTERA_QSPI) += altera_qspi.o
@@ -17,6 +16,9 @@ mtd-$(CONFIG_ST_SMI) += st_smi.o
 mtd-$(CONFIG_STM32_FLASH) += stm32_flash.o
 mtd-$(CONFIG_RENESAS_RPC_HF) += renesas_rpc_hf.o
 mtd-$(CONFIG_HBMC_AM654) += hbmc-am654.o
+
+# dm-mtd
+obj-$(CONFIG_$(SPL_)DM_MTD) += mtd-uclass.o
 
 # U-Boot build
 ifeq ($(CONFIG_SPL_BUILD)$(CONFIG_TPL_BUILD),)
