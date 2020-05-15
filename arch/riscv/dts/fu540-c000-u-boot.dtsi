@@ -48,6 +48,13 @@
 
 	soc {
 		u-boot,dm-spl;
+
+		mode: mode@1000 {
+			compatible = "sifive,fu540-modeselect";
+			reg = <0x0 0x1000 0x0 0x1FFF>;
+			u-boot,dm-spl;
+		};
+
 		otp: otp@10070000 {
 			compatible = "sifive,fu540-c000-otp";
 			reg = <0x0 0x10070000 0x0 0x0FFF>;
