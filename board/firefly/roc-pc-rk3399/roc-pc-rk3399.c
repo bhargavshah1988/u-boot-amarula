@@ -39,10 +39,18 @@ out:
 #define BUS_NUM				2
 #define ROC_RK3399_MEZZ_BAT_ADDR	0x62
 
+enum roc_rk3399_pc_board_type {
+	ROC_RK3399_PC,			/* roc-rk3399-pc base board */
+	ROC_RK3399_MEZZ_M2_POE,		/* roc-rk3399-Mezz M.2 PoE */
+};
+
 int board_early_init_f(void)
 {
 	struct udevice *bus, *dev;
 	int ret;
+
+	/* default board type */
+	gd->board_type = ROC_RK3399_PC;
 
 	ret = uclass_get_device_by_seq(UCLASS_I2C, BUS_NUM, &bus);
 	if (ret) {
@@ -56,8 +64,23 @@ int board_early_init_f(void)
 		return ret;
 	}
 
+	gd->board_type = ROC_RK3399_MEZZ_M2_POE;
+
 	return 0;
 }
+
+#ifdef CONFIG_SPL_LOAD_FIT
+int board_fit_config_name_match(const char *name)
+{
+	if (gd->board_type == ROC_RK3399_PC && !strcmp(name, "rk3399-roc-pc"))
+		return 0;
+
+	if (gd->board_type == ROC_RK3399_MEZZ_M2_POE && !strcmp(name, "rk3399-roc-pc-mezzanine"))
+		return 0;
+
+	return -EINVAL;
+}
+#endif
 
 #endif /* CONFIG_SPL_BUILD */
 
