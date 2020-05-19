@@ -423,6 +423,7 @@ static int rockchip_i2c_probe(struct udevice *bus)
 		}
 	}
 
+	printf("rockchip_i2c_probe %p\n", priv->regs);
 	return 0;
 }
 
