@@ -56,3 +56,16 @@
 &vcc_sdio {
 	regulator-always-on;
 };
+
+&pcfg_pull_none_12ma {
+	u-boot,dm-pre-reloc;
+};
+
+&i2c2 {
+	u-boot,dm-pre-reloc;
+	status= "okay";
+};
+
+&i2c2_xfer {
+	u-boot,dm-pre-reloc;
+};

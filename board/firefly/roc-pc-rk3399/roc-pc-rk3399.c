@@ -31,6 +31,36 @@ out:
 }
 #endif
 
+#if !defined(CONFIG_TPL_BUILD) && defined(CONFIG_SPL_BUILD)
+
+#include <i2c.h>
+#include <linux/compat.h>
+
+#define BUS_NUM				2
+#define ROC_RK3399_MEZZ_BAT_ADDR	0x62
+
+int board_early_init_f(void)
+{
+	struct udevice *bus, *dev;
+	int ret;
+
+	ret = uclass_get_device_by_seq(UCLASS_I2C, BUS_NUM, &bus);
+	if (ret) {
+		dev_err(bus, "failed to get i2c bus 2\n");
+		return ret;
+	}
+
+	ret = dm_i2c_probe(bus, ROC_RK3399_MEZZ_BAT_ADDR, 0, &dev);
+	if (ret) {
+		dev_err(dev, "failed to probe i2c2 battery controller IC\n");
+		return ret;
+	}
+
+	return 0;
+}
+
+#endif /* CONFIG_SPL_BUILD */
+
 #if defined(CONFIG_TPL_BUILD)
 
 #define GPIO0_BASE      0xff720000
