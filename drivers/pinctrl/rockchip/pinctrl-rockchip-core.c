@@ -151,7 +151,6 @@ static int rockchip_pinctrl_get_gpio_mux(struct udevice *dev, int banknum,
 {	struct rockchip_pinctrl_priv *priv = dev_get_priv(dev);
 	struct rockchip_pin_ctrl *ctrl = priv->ctrl;
 
-	printf("rockchip_pinctrl_get_gpio_mux\n");
 	return rockchip_get_mux(&ctrl->pin_banks[banknum], index);
 }
 
@@ -471,7 +470,6 @@ static int rockchip_pinctrl_set_state(struct udevice *dev,
 		}
 	}
 
-	printf("rockchip_pinctrl_set_state\n");
 	return 0;
 }
 
@@ -598,7 +596,6 @@ int rockchip_pinctrl_probe(struct udevice *dev)
 	struct regmap *regmap;
 	int ret = 0;
 
-	printf("rockchip_pinctrl_probe\n");
 	/* get rockchip grf syscon phandle */
 	ret = uclass_get_device_by_phandle(UCLASS_SYSCON, dev, "rockchip,grf",
 					   &syscon);
