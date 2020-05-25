@@ -69,20 +69,15 @@ to move the migration with in the deadline.
 No dm conversion yet::
 
 	drivers/spi/fsl_espi.c
-	drivers/spi/lpc32xx_ssp.c
-	drivers/spi/sh_spi.c
-	drivers/spi/soft_spi_legacy.c
 
 * Status: In progress
 * Deadline: 2019.04
 
 Partially converted::
 
-	drivers/spi/davinci_spi.c
 	drivers/spi/fsl_dspi.c
 	drivers/spi/kirkwood_spi.c
 	drivers/spi/mxc_spi.c
-	drivers/spi/mxs_spi.c
 	drivers/spi/omap3_spi.c
 	drivers/spi/sh_qspi.c
 
