@@ -257,6 +257,12 @@ config SANDBOX_SPI
 		};
 	  };
 
+config SOFT_SPI
+	bool "Soft SPI driver"
+	help
+	 Enable Soft SPI driver. This driver is to use GPIO simulate
+	 the SPI protocol.
+
 config SPI_SIFIVE
 	bool "SiFive SPI driver"
 	help
@@ -369,13 +375,6 @@ config ZYNQMP_GQSPI
 	  is used to communicate with qspi flash devices.
 
 endif # if DM_SPI
-
-config SOFT_SPI
-	bool "Soft SPI driver"
-	depends on DM_SPI || (DEPRECATED && !DM_SPI)
-	help
-	 Enable Soft SPI driver. This driver is to use GPIO simulate
-	 the SPI protocol.
 
 config MSCC_BB_SPI
 	bool "MSCC bitbang SPI driver"
