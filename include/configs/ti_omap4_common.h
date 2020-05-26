@@ -107,8 +107,6 @@
 			"setenv fdtfile omap4-panda-a4.dtb; fi;" \
 		"if test $board_name = panda-es; then " \
 			"setenv fdtfile omap4-panda-es.dtb; fi;" \
-		"if test $board_name = duovero; then " \
-			"setenv fdtfile omap4-duovero-parlor.dtb; fi;" \
 		"if test $fdtfile = undefined; then " \
 			"echo WARNING: Could not determine device tree to use; fi; \0" \
 	BOOTENV
