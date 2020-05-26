@@ -75,10 +75,8 @@ No dm conversion yet::
 
 Partially converted::
 
-	drivers/spi/fsl_dspi.c
 	drivers/spi/kirkwood_spi.c
 	drivers/spi/mxc_spi.c
-	drivers/spi/omap3_spi.c
 	drivers/spi/sh_qspi.c
 
 * Status: In progress
