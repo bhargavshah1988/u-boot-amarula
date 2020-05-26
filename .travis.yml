@@ -386,27 +386,11 @@ matrix:
           TOOLCHAIN="powerpc"
     - name: "buildman mpc85xx&freescale (excluding many)"
       env:
-        - BUILDMAN="mpc85xx&freescale -x t208xrdb -x t4qds -x t102* -x p1_p2_rdb_pc -x p1010rdb -x corenet_ds -x b4860qds -x bsc91*"
-          TOOLCHAIN="powerpc"
-    - name: "buildman t208xrdb corenet_ds"
-      env:
-        - BUILDMAN="t208xrdb corenet_ds"
+        - BUILDMAN="mpc85xx&freescale"
           TOOLCHAIN="powerpc"
     - name: "buildman Freescale PowerPC"
       env:
-        - BUILDMAN="t4qds b4860qds mpc83xx&freescale mpc86xx&freescale"
-          TOOLCHAIN="powerpc"
-    - name: "buildman t102*"
-      env:
-        - BUILDMAN="t102*"
-          TOOLCHAIN="powerpc"
-    - name: "buildman p1_p2_rdb_pc"
-      env:
-        - BUILDMAN="p1_p2_rdb_pc"
-          TOOLCHAIN="powerpc"
-    - name: "buildman p1010rdb bsc91"
-      env:
-        - BUILDMAN="p1010rdb bsc91"
+        - BUILDMAN="mpc83xx&freescale mpc86xx&freescale"
           TOOLCHAIN="powerpc"
     - name: "buildman siemens"
       env:
