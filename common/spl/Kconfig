@@ -101,10 +101,6 @@ config SPL_MMC_BOOT
 	bool "Load SPL from SD Card / eMMC"
 	depends on PPC && (SUPPORT_SPL && !SPL_FRAMEWORK)
 
-config SPL_SPI_BOOT
-	bool "Load SPL from SPI flash"
-	depends on PPC && (SUPPORT_SPL && !SPL_FRAMEWORK)
-
 config SPL_FSL_PBL
 	bool "Create SPL in Freescale PBI format"
 	depends on (PPC || ARCH_LS1021A || ARCH_LS1043A || ARCH_LS1046A) && \

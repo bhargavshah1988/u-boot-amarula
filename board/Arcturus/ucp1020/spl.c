@@ -48,10 +48,6 @@ void board_init_f(ulong bootflag)
 	/* Read back the register to synchronize the write. */
 	in_be32(&gur->pmuxcr);
 
-#ifdef CONFIG_SPL_SPI_BOOT
-	clrbits_be32(&gur->pmuxcr, MPC85xx_PMUXCR_SD_DATA);
-#endif
-
 	/* initialize selected port with appropriate baud rate */
 	plat_ratio = in_be32(&gur->porpllsr) & MPC85xx_PORPLLSR_PLAT_RATIO;
 	plat_ratio >>= 1;
@@ -62,8 +58,6 @@ void board_init_f(ulong bootflag)
 		     bus_clk / 16 / CONFIG_BAUDRATE);
 #ifdef CONFIG_SPL_MMC_BOOT
 	puts("\nSD boot...\n");
-#elif defined(CONFIG_SPL_SPI_BOOT)
-	puts("\nSPI Flash boot...\n");
 #endif
 
 	/* copy code to RAM and jump to it - this should not return */

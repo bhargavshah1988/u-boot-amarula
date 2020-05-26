@@ -11,7 +11,6 @@ endif
 spi-nor-y += spi-nor-ids.o
 
 ifdef CONFIG_SPL_BUILD
-obj-$(CONFIG_SPL_SPI_BOOT)	+= fsl_espi_spl.o
 ifeq ($(CONFIG_SPL_SPI_FLASH_TINY),y)
 spi-nor-y += spi-nor-tiny.o
 else

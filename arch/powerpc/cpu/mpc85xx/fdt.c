@@ -148,13 +148,6 @@ void ft_fixup_cpu(void *blob, u64 memory_limit)
 	if (off < 0)
 		printf("Failed to reserve memory for SD deep sleep: %s\n",
 		       fdt_strerror(off));
-#elif defined(CONFIG_SPL_SPI_BOOT)
-	off = fdt_add_mem_rsv(blob, CONFIG_SYS_SPI_FLASH_U_BOOT_START,
-		CONFIG_SYS_SPI_FLASH_U_BOOT_SIZE);
-	if (off < 0)
-		printf("Failed to reserve memory for SPI deep sleep: %s\n",
-		       fdt_strerror(off));
-#endif
 #endif
 }
 #endif
