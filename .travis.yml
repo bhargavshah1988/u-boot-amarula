@@ -386,11 +386,11 @@ matrix:
           TOOLCHAIN="powerpc"
     - name: "buildman mpc85xx&freescale (excluding many)"
       env:
-        - BUILDMAN="mpc85xx&freescale -x t102*"
+        - BUILDMAN="mpc85xx&freescale"
           TOOLCHAIN="powerpc"
     - name: "buildman Freescale PowerPC"
       env:
-        - BUILDMAN="t4qds b4860qds mpc83xx&freescale mpc86xx&freescale"
+        - BUILDMAN="mpc83xx&freescale mpc86xx&freescale"
           TOOLCHAIN="powerpc"
     - name: "buildman siemens"
       env:
