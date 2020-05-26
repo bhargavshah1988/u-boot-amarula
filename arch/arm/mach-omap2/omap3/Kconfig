@@ -68,18 +68,6 @@ config TARGET_OMAP3_IGEP00X0
 	select OMAP3_GPIO_6
 	imply CMD_DM
 
-config TARGET_OMAP3_OVERO
-	bool "OMAP35xx Gumstix Overo"
-	select DM
-	select DM_GPIO
-	select DM_SERIAL
-	select OMAP3_GPIO_2
-	select OMAP3_GPIO_3
-	select OMAP3_GPIO_4
-	select OMAP3_GPIO_5
-	select OMAP3_GPIO_6
-	imply CMD_DM
-
 config TARGET_OMAP3_ZOOM1
 	bool "TI Zoom1"
 	select DM
@@ -171,7 +159,6 @@ source "board/ti/beagle/Kconfig"
 source "board/timll/devkit8000/Kconfig"
 source "board/ti/evm/Kconfig"
 source "board/isee/igep00x0/Kconfig"
-source "board/overo/Kconfig"
 source "board/logicpd/zoom1/Kconfig"
 source "board/ti/am3517crane/Kconfig"
 source "board/pandora/Kconfig"
