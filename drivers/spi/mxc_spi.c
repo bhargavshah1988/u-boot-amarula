@@ -67,38 +67,14 @@ static inline struct mxc_spi_slave *to_mxc_spi_slave(struct spi_slave *slave)
 
 static void mxc_spi_cs_activate(struct mxc_spi_slave *mxcs)
 {
-#if defined(CONFIG_DM_SPI)
-	struct udevice *dev = mxcs->dev;
-	struct dm_spi_slave_platdata *slave_plat = dev_get_parent_platdata(dev);
-
-	u32 cs = slave_plat->cs;
-
-	if (!dm_gpio_is_valid(&mxcs->cs_gpios[cs]))
-		return;
-
-	dm_gpio_set_value(&mxcs->cs_gpios[cs], 1);
-#else
 	if (mxcs->gpio > 0)
 		gpio_set_value(mxcs->gpio, mxcs->ss_pol);
-#endif
 }
 
 static void mxc_spi_cs_deactivate(struct mxc_spi_slave *mxcs)
 {
-#if defined(CONFIG_DM_SPI)
-	struct udevice *dev = mxcs->dev;
-	struct dm_spi_slave_platdata *slave_plat = dev_get_parent_platdata(dev);
-
-	u32 cs = slave_plat->cs;
-
-	if (!dm_gpio_is_valid(&mxcs->cs_gpios[cs]))
-		return;
-
-	dm_gpio_set_value(&mxcs->cs_gpios[cs], 0);
-#else
 	if (mxcs->gpio > 0)
 		gpio_set_value(mxcs->gpio, !(mxcs->ss_pol));
-#endif
 }
 
 u32 get_cspi_div(u32 div)
@@ -415,101 +391,6 @@ static int mxc_spi_claim_bus_internal(struct mxc_spi_slave *mxcs, int cs)
 	return 0;
 }
 
-#ifndef CONFIG_DM_SPI
-int spi_xfer(struct spi_slave *slave, unsigned int bitlen, const void *dout,
-		void *din, unsigned long flags)
-{
-	struct mxc_spi_slave *mxcs = to_mxc_spi_slave(slave);
-
-	return mxc_spi_xfer_internal(mxcs, bitlen, dout, din, flags);
-}
-
-/*
- * Some SPI devices require active chip-select over multiple
- * transactions, we achieve this using a GPIO. Still, the SPI
- * controller has to be configured to use one of its own chipselects.
- * To use this feature you have to implement board_spi_cs_gpio() to assign
- * a gpio value for each cs (-1 if cs doesn't need to use gpio).
- * You must use some unused on this SPI controller cs between 0 and 3.
- */
-static int setup_cs_gpio(struct mxc_spi_slave *mxcs,
-			 unsigned int bus, unsigned int cs)
-{
-	int ret;
-
-	mxcs->gpio = board_spi_cs_gpio(bus, cs);
-	if (mxcs->gpio == -1)
-		return 0;
-
-	gpio_request(mxcs->gpio, "spi-cs");
-	ret = gpio_direction_output(mxcs->gpio, !(mxcs->ss_pol));
-	if (ret) {
-		printf("mxc_spi: cannot setup gpio %d\n", mxcs->gpio);
-		return -EINVAL;
-	}
-
-	return 0;
-}
-
-static unsigned long spi_bases[] = {
-	MXC_SPI_BASE_ADDRESSES
-};
-
-struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
-			unsigned int max_hz, unsigned int mode)
-{
-	struct mxc_spi_slave *mxcs;
-	int ret;
-
-	if (bus >= ARRAY_SIZE(spi_bases))
-		return NULL;
-
-	if (max_hz == 0) {
-		printf("Error: desired clock is 0\n");
-		return NULL;
-	}
-
-	mxcs = spi_alloc_slave(struct mxc_spi_slave, bus, cs);
-	if (!mxcs) {
-		puts("mxc_spi: SPI Slave not allocated !\n");
-		return NULL;
-	}
-
-	mxcs->ss_pol = (mode & SPI_CS_HIGH) ? 1 : 0;
-
-	ret = setup_cs_gpio(mxcs, bus, cs);
-	if (ret < 0) {
-		free(mxcs);
-		return NULL;
-	}
-
-	mxcs->base = spi_bases[bus];
-	mxcs->max_hz = max_hz;
-	mxcs->mode = mode;
-
-	return &mxcs->slave;
-}
-
-void spi_free_slave(struct spi_slave *slave)
-{
-	struct mxc_spi_slave *mxcs = to_mxc_spi_slave(slave);
-
-	free(mxcs);
-}
-
-int spi_claim_bus(struct spi_slave *slave)
-{
-	struct mxc_spi_slave *mxcs = to_mxc_spi_slave(slave);
-
-	return mxc_spi_claim_bus_internal(mxcs, slave->cs);
-}
-
-void spi_release_bus(struct spi_slave *slave)
-{
-	/* TODO: Shut the controller down */
-}
-#else
-
 static int mxc_spi_probe(struct udevice *bus)
 {
 	struct mxc_spi_slave *mxcs = dev_get_platdata(bus);
@@ -608,4 +489,3 @@ U_BOOT_DRIVER(mxc_spi) = {
 	.platdata_auto_alloc_size = sizeof(struct mxc_spi_slave),
 	.probe	= mxc_spi_probe,
 };
-#endif
