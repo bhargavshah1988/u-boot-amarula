@@ -146,13 +146,6 @@ config TARGET_ETAMIN
 	select DM_SERIAL
 	imply CMD_DM
 
-config TARGET_PCM051
-	bool "Support pcm051"
-	select DM
-	select DM_GPIO
-	select DM_SERIAL
-	imply CMD_DM
-
 config TARGET_PENGWYN
 	bool "Support pengwyn"
 	select DM
